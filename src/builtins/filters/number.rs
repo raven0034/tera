@@ -107,7 +107,7 @@ mod tests {
     use std::collections::HashMap;
 
     #[test]
-    fn test_abs_unsigend() {
+    fn test_abs_unsigned() {
         let result = abs(&to_value(1).unwrap(), &HashMap::new());
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), to_value(1).unwrap());
@@ -134,6 +134,36 @@ mod tests {
         assert_eq!(
             result.unwrap_err().to_string(),
             "Filter `abs` was used on a value that isn't a number."
+        );
+    }
+
+    #[test]
+    fn test_sqrt_unsigned() {
+        let result = sqrt(&to_value(4).unwrap(), &HashMap::new());
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), to_value(2.0).unwrap());
+    }
+    #[test]
+    fn test_sqrt_unsigned_larger() {
+        let result = sqrt(&to_value(144).unwrap(), &HashMap::new());
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), to_value(12.0).unwrap());
+    }
+
+    #[test]
+    fn test_sqrt_float() {
+        let result = sqrt(&to_value(12.25).unwrap(), &HashMap::new());
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), to_value(3.5).unwrap());
+    }
+
+    #[test]
+    fn test_sqrt_negative_number() {
+        let result = sqrt(&to_value(-4).unwrap(), &HashMap::new());
+        assert!(result.is_err());
+        assert_eq!(
+            result.unwrap_err().to_string(),
+            "Filter `sqrt` received a negative value: got `-4.0`, only non-negative values are allowed."
         );
     }
 
