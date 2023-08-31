@@ -1161,6 +1161,13 @@ Example: `{{ negative_number | abs }}`
 
 If negative_number is -1, the output will be 1. If num_messages is -2.0 the output will be 2.
 
+#### sqrt
+Returns the square root value
+
+Example: `{{ positive_number | sqrt }}`
+
+If positive_number is 4, the output will be 2. If num_messages is 12.25 the output will be 3.5.
+
 #### pluralize
 Returns a plural suffix if the value is not equal to ±1, or a singular suffix otherwise. The plural suffix defaults to `s` and the
 singular suffix defaults to the empty string (i.e. nothing).
