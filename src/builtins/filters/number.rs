@@ -20,6 +20,21 @@ pub fn abs(value: &Value, _: &HashMap<String, Value>) -> Result<Value> {
     }
 }
 
+/// Returns the square root value of the argument.
+pub fn sqrt(value: &Value, _: &HashMap<String, Value>) -> Result<Value> {
+    let num = try_get_value!("sqrt", "value", f64, value);
+    let sqrt = num.sqrt();
+    if sqrt.is_nan() {
+        Err(Error::msg(format!(
+            "Filter `sqrt` received a negative value: got `{:?}`, \
+             only non-negative values are allowed.",
+            num
+        )))
+    } else {
+        Ok(to_value(sqrt).unwrap())
+    }
+}
+
 /// Returns a plural suffix if the value is not equal to ±1, or a singular
 /// suffix otherwise. The plural suffix defaults to `s` and the singular suffix
 /// defaults to the empty string (i.e nothing).
