@@ -723,6 +723,7 @@ impl Tera {
         self.register_filter("reverse", common::reverse);
         #[cfg(feature = "builtins")]
         self.register_filter("date", common::date);
+        self.register_filter("parse_date", common::parse_date);
         self.register_filter("json_encode", common::json_encode);
         self.register_filter("as_str", common::as_str);
 
