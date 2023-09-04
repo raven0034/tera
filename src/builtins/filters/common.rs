@@ -9,8 +9,12 @@ use crate::utils::render_to_string;
 #[cfg(feature = "builtins")]
 use chrono::{
     format::{Item, StrftimeItems},
-    DateTime, FixedOffset, NaiveDate, NaiveDateTime, TimeZone, Utc,
+    DateTime, FixedOffset, Local, NaiveDate, NaiveDateTime, TimeZone, Utc,
 };
+#[cfg(feature = "builtins")]
+extern crate chrono_english;
+#[cfg(feature = "builtins")]
+use chrono_english::{parse_date_string, Dialect};
 #[cfg(feature = "builtins")]
 use chrono_tz::Tz;
 use serde_json::value::{to_value, Value};
@@ -226,6 +230,31 @@ pub fn date(value: &Value, args: &HashMap<String, Value>) -> Result<Value> {
     };
 
     to_value(formatted.to_string()).map_err(Error::json)
+}
+
+///
+#[cfg(feature = "builtins")]
+pub fn parse_date(value: &Value, args: &HashMap<String, Value>) -> Result<Value> {
+    let input = try_get_value!("parse_date", "value", String, value);
+
+    // Fetch base time from arg, default to now
+    let now = Local::now();
+    let base = match args.get("base") {
+        Some(val) => {
+            let base = try_get_value!("parse_date", "base", String, val);
+            match parse_date_string(&base, now, Dialect::Uk) {
+                Ok(b) => Some(b),
+                Err(_) => return Err(Error::msg(format!("Error parsing `{}` as a base", base))),
+            }
+        }
+        None => Some(now),
+    }
+    .unwrap();
+
+    // Find input date relative to base
+    let parsed = parse_date_string(&input, base, Dialect::Uk);
+    let date_time = parsed.map_err(|e| Error::msg(format!("{}", e)))?;
+    to_value(format!("{}", date_time.format("%+"))).map_err(Error::json)
 }
 
 // Returns the given value as a string.
