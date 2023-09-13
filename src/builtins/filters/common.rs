@@ -9,8 +9,11 @@ use crate::utils::render_to_string;
 #[cfg(feature = "builtins")]
 use chrono::{
     format::{Item, StrftimeItems},
-    DateTime, FixedOffset, Local, NaiveDate, NaiveDateTime, TimeZone, Utc,
+    DateTime, FixedOffset, NaiveDate, NaiveDateTime, TimeZone, Utc,
 };
+
+#[cfg(feature = "builtins")]
+use chrono_tz::Europe::London;
 #[cfg(feature = "builtins")]
 extern crate chrono_english;
 #[cfg(feature = "builtins")]
@@ -238,7 +241,7 @@ pub fn parse_date(value: &Value, args: &HashMap<String, Value>) -> Result<Value>
     let input = try_get_value!("parse_date", "value", String, value);
 
     // Fetch base time from arg, default to now
-    let now = Local::now();
+    let now = London::now();
     let base = match args.get("base") {
         Some(val) => {
             let base = try_get_value!("parse_date", "base", String, val);
@@ -268,7 +271,7 @@ pub fn as_str(value: &Value, _: &HashMap<String, Value>) -> Result<Value> {
 mod tests {
     use super::*;
     #[cfg(feature = "builtins")]
-    use chrono::{DateTime, Local};
+    use chrono::DateTime;
     use serde_json;
     use serde_json::value::to_value;
     use std::collections::HashMap;
@@ -382,7 +385,7 @@ mod tests {
     #[test]
     fn date_rfc3339() {
         let args = HashMap::new();
-        let dt: DateTime<Local> = Local::now();
+        let dt: DateTime<London> = London::now();
         let result = date(&to_value(dt.to_rfc3339()).unwrap(), &args);
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), to_value(dt.format("%Y-%m-%d").to_string()).unwrap());

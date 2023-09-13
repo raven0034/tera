@@ -117,7 +117,7 @@ pub fn now(args: &HashMap<String, Value>) -> Result<Value> {
         }
         Ok(to_value(datetime.to_rfc3339()).unwrap())
     } else {
-        let datetime = Local::now();
+        let datetime = London::now();
         if timestamp {
             return Ok(to_value(datetime.timestamp()).unwrap());
         }
