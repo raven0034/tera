@@ -241,7 +241,7 @@ pub fn parse_date(value: &Value, args: &HashMap<String, Value>) -> Result<Value>
     let input = try_get_value!("parse_date", "value", String, value);
 
     // Fetch base time from arg, default to now
-    let now = London::now();
+    let now = London.from_utc_datetime(&Utc::now().naive_utc());
     let base = match args.get("base") {
         Some(val) => {
             let base = try_get_value!("parse_date", "base", String, val);
@@ -385,7 +385,7 @@ mod tests {
     #[test]
     fn date_rfc3339() {
         let args = HashMap::new();
-        let dt: DateTime<London> = London::now();
+        let dt = London.from_utc_datetime(&Utc::now().naive_utc());
         let result = date(&to_value(dt.to_rfc3339()).unwrap(), &args);
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), to_value(dt.format("%Y-%m-%d").to_string()).unwrap());

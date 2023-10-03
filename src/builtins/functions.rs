@@ -3,6 +3,8 @@ use std::collections::HashMap;
 #[cfg(feature = "builtins")]
 use chrono::prelude::*;
 #[cfg(feature = "builtins")]
+use chrono_tz::Europe::London;
+#[cfg(feature = "builtins")]
 use rand::Rng;
 use serde_json::value::{from_value, to_value, Value};
 
@@ -117,7 +119,7 @@ pub fn now(args: &HashMap<String, Value>) -> Result<Value> {
         }
         Ok(to_value(datetime.to_rfc3339()).unwrap())
     } else {
-        let datetime = London::now();
+        let datetime = London.from_utc_datetime(&Utc::now().naive_utc());
         if timestamp {
             return Ok(to_value(datetime.timestamp()).unwrap());
         }
