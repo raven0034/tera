@@ -51,3 +51,6 @@ builtins = ["urlencode", "slug", "humansize", "chrono", "chrono-tz", "rand"]
 urlencode = ["percent-encoding"]
 preserve_order = ["serde_json/preserve_order"]
 date-locale = ["builtins", "chrono/unstable-locales"]
+
+[patch.crates-io]
+chrono-english = { git = "https://github.com/raven0034/chrono-english.git", rev = "f1517ac" }
